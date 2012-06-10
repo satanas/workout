@@ -1,44 +1,83 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# This workout is based on the 300's and Spartucus official workouts. I hope to
-# document each exercise soon
+# This workout is based on the 300's and Spartucus official workouts and I hope to
+# document each exercise soon. Rules are:
+# 1.- 10 exercises
+# 2.- 60 seconds sets
+# 3.- 15 seconds break
+# 4.- Complete whole circuit, rest 2 minutes and repeat
+# 5.- Enjoy the pain mothafucka
 #
 # Author: Wil Alvarez (aka satanas) <wil.alejandro@gmail.com>
-# Jan 01, 2012
+# Jun 09, 2012
 
 import os
 import gtk
 import sys
 import gst
+import random
 import gobject
 
-WORKOUTS = [
-    '(Pe) Side to side push ups',
-    '(Ab) Bike abs',
-    '(Ho) Single arm dumbbell swing',
-    '(Ab) Regular abs',
-    '(To) Mountain Climber',
-    '(Pe) "T" push ups',
-    '(Ho) Bent over arm side lateral',
-    '(Ab) Total abs',
-    '(Pi) Split Jump',
-    '(Ho) Dumbbell front raises (to ceiling)',
+random.seed()
+
+# Types
+CORE = [
+    'Mountain climber',
+    'Plank',
+    'Knee to elbow plank',
+    'Side plank',
+    '1 Leg push-up plank',
+    'Stable arm plank',
+    'Scorpions',
 ]
-'''
-WORKOUTS = [
-    '(Pe) Side to side push ups',
-    '(Ab) Bike abs',
-    '(Ho) Superman',
-    '(Ab) Regular abs',
-    '(To) Mountain Climber',
-    '(Pe) "T" push ups',
-    '(Pi) High Jump', #'(Pi) Frog jump',
-    '(Ab) Total abs',
-    '(Pi) Split Jump',
-    '(Pe) Bank push-up',
+
+LEGS = [
+    'Split jump',
+    'High jump',
+    'Frog jump',
+    'Ballistic knee raises',
+    'Goblet squad',
+    'Dumbbell lunge & rotation',
 ]
-'''
+
+ARMS = [
+    'Dumbbell front raises (to ceiling)',
+    'Bent over arm side lateral',
+    '"T" push ups',
+    'Single arm dumbbell swing',
+    'Side to side push ups',
+    'Superman',
+    'Dumbbell row',
+]
+
+ABS = [
+    'Reverse crunch',
+    #'Dragon flag',
+    'Total abs (ball)',
+    'Tall sit up',
+    'Sky reacher',
+    'Hip raises',
+    'Rowers',
+    'Oblique crunch',
+    'Superman crunch',
+    'Bike abs',
+]
+
+random.shuffle(CORE)
+random.shuffle(LEGS)
+random.shuffle(ARMS)
+random.shuffle(ABS)
+
+WORKOUTS = []
+for item in [CORE, LEGS, ARMS, ABS]:
+    if item == CORE or ABS:
+        WORKOUTS += random.sample(item, 3)
+    else:
+        WORKOUTS += random.sample(item, 2)
+
+random.shuffle(WORKOUTS)
+
 LIMIT_WORKOUT = 60 # seconds
 LIMIT_REST = 15 # seconds
 
