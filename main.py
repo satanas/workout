@@ -12,6 +12,10 @@
 # Author: Wil Alvarez (aka satanas) <wil.alejandro@gmail.com>
 # Jun 09, 2012
 
+#TODO
+# Exercises list before start
+# Level selector
+
 import os
 import gtk
 import sys
@@ -38,7 +42,7 @@ LEGS = [
     'Frog jump',
     'Ballistic knee raises',
     'Goblet squad',
-    'Dumbbell lunge & rotation',
+    'Dumbbell lunge and rotation',
 ]
 
 ARMS = [
@@ -77,6 +81,8 @@ for item in [CORE, LEGS, ARMS, ABS]:
         WORKOUTS += random.sample(item, 2)
 
 random.shuffle(WORKOUTS)
+
+print WORKOUTS
 
 LIMIT_WORKOUT = 60 # seconds
 LIMIT_REST = 15 # seconds
