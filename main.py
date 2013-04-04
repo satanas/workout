@@ -27,7 +27,7 @@ random.seed()
 
 # Types
 CORE = [
-    'Mountain climber',
+    #'Mountain climber',
     'Plank',
     'Knee to elbow plank',
     'Side plank',
@@ -37,10 +37,10 @@ CORE = [
 ]
 
 LEGS = [
-    'Split jump',
-    'High jump',
-    'Frog jump',
-    'Ballistic knee raises',
+    #'Split jump',
+    #'High jump',
+    #'Frog jump',
+    #'Ballistic knee raises',
     'Goblet squad',
     'Dumbbell lunge and rotation',
 ]
@@ -62,9 +62,9 @@ ABS = [
     'Tall sit up',
     'Sky reacher',
     'Hip raises',
-    'Rowers',
+    #'Rowers',
     'Oblique crunch',
-    'Superman crunch',
+    #'Superman crunch',
     'Bike abs',
 ]
 
@@ -75,7 +75,7 @@ random.shuffle(ABS)
 
 WORKOUTS = []
 for item in [CORE, LEGS, ARMS, ABS]:
-    if item == CORE or ABS:
+    if item == CORE or item == ABS:
         WORKOUTS += random.sample(item, 3)
     else:
         WORKOUTS += random.sample(item, 2)
