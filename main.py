@@ -7,7 +7,7 @@
 # 2.- 60 seconds sets
 # 3.- 15 seconds break
 # 4.- Complete whole circuit, rest 2 minutes and repeat
-# 5.- Enjoy the pain mothafucka
+# 5.- Enjoy the pain mothafucka!
 #
 # Author: Wil Alvarez (aka satanas) <wil.alejandro@gmail.com>
 # Jun 09, 2012
@@ -25,64 +25,117 @@ import gobject
 
 random.seed()
 
-# Types
-CORE = [
-    #'Mountain climber',
-    'Plank',
-    'Knee to elbow plank',
-    'Side plank',
-    '1 Leg push-up plank',
-    'Stable arm plank',
-    'Scorpions',
-]
+class Level:
+    WARM_UP = 1
+    FAT_BURNER = 2
+    SPARTAN = 3
 
-LEGS = [
-    #'Split jump',
-    #'High jump',
-    #'Frog jump',
-    #'Ballistic knee raises',
-    'Goblet squad',
-    'Dumbbell lunge and rotation',
-]
+    @staticmethod
+    def to_s(number):
+        if number == Level.WARM_UP:
+            return 'Warm Up'
+        if number == Level.FAT_BURNER:
+            return 'Fat Burner'
+        if number == Level.SPARTAN:
+            return 'Spartan'
 
-ARMS = [
-    'Dumbbell front raises (to ceiling)',
-    'Bent over arm side lateral',
-    '"T" push ups',
-    'Single arm dumbbell swing',
-    'Side to side push ups',
-    'Superman',
-    'Dumbbell row',
-]
+class Impact:
+    NORMAL = 1
+    HIGH = 2
 
-ABS = [
-    'Reverse crunch',
-    #'Dragon flag',
-    'Total abs (ball)',
-    'Tall sit up',
-    'Sky reacher',
-    'Hip raises',
-    #'Rowers',
-    'Oblique crunch',
-    #'Superman crunch',
-    'Bike abs',
-]
+class Exercise:
+    def __init__(self, name, level, impact):
+        self.name = name
+        self.level = level
+        self.impact = impact
 
-random.shuffle(CORE)
-random.shuffle(LEGS)
-random.shuffle(ARMS)
-random.shuffle(ABS)
+class Training:
+    def __init__(self):
+        self.exercises = []
 
-WORKOUTS = []
-for item in [CORE, LEGS, ARMS, ABS]:
-    if item == CORE or item == ABS:
-        WORKOUTS += random.sample(item, 3)
-    else:
-        WORKOUTS += random.sample(item, 2)
+    def shuffle(self):
+        random.shuffle(self.exercises)
 
-random.shuffle(WORKOUTS)
+    def select(self, num, level, impact):
+        selected = []
+        while len(selected) < 2:
+            item = random.choice(self.exercises)
+            if item not in selected and item.level <= level and item.impact <= impact:
+                selected.append(item)
+        return selected
 
-print WORKOUTS
+
+class Core(Training):
+    def __init__(self):
+        Training.__init__(self)
+
+        self.exercises.append(Exercise('Plank', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Side Plank', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Stable Arm Plank', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('1 Leg Plank', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Scorpions', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Mountain Climber', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('Knee to Elbow Plank', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('High Jump Push-Ups', Level.SPARTAN, Impact.HIGH))
+
+        self.shuffle()
+
+class Legs(Training):
+    def __init__(self):
+        Training.__init__(self)
+
+        self.exercises.append(Exercise('Goblet Squad', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Dumbbell Lunge and Rotation', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Ballistic Knee Raises', Level.WARM_UP, Impact.HIGH))
+        self.exercises.append(Exercise('Split Jump', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('High Jump', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('Frog Jump', Level.SPARTAN, Impact.HIGH))
+
+        self.shuffle()
+
+class Arms(Training):
+    def __init__(self):
+        Training.__init__(self)
+
+        self.exercises.append(Exercise('Dumbbell Front Raises (to ceiling)', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Single Arm Dumbbell Swing', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Dumbbell Row', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Superman Row', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('"T" Push-Ups', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Side to Side Push-Ups', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Bent Over Arm', Level.WARM_UP, Impact.NORMAL))
+
+        self.shuffle()
+
+class Abs(Training):
+    def __init__(self):
+        Training.__init__(self)
+
+        self.exercises.append(Exercise('Tall Sit Up', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Reverse Crunch', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Total Abs (ball)', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Sky Reacher', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Oblique Crunch', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Bike Abs', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Superman Crunch', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Rowers', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Hip Raises', Level.SPARTAN, Impact.NORMAL))
+
+        self.shuffle()
+
+#core = Core()
+#legs = Legs()
+#arms = Arms()
+#abs_ = Abs()
+#
+#WORKOUTS = core.select()
+#for item in [core, legs, arms, abs_]:
+#    if item == CORE or item == ABS:
+#        WORKOUTS += random.sample(item, 3)
+#    else:
+#        WORKOUTS += random.sample(item, 2)
+#
+#random.shuffle(WORKOUTS)
 
 LIMIT_WORKOUT = 60 # seconds
 LIMIT_REST = 15 # seconds
@@ -92,6 +145,8 @@ class Workout(gtk.Window):
         gtk.Window.__init__(self)
 
         self.index = 0
+        self.level = None
+        self.impact = None
         self.timer = None
         self.status = 'stopped'
         self.sound = Sound()
@@ -104,46 +159,103 @@ class Workout(gtk.Window):
         self.connect('delete-event', self.__close)
         self.connect('key-press-event', self.__on_key_press)
 
-        self.time_label = gtk.Label()
-        self.time_label.set_use_markup(True)
-        self.time_label.set_markup('<span size="120000">00:00:00</span>')
-        time_evbox = gtk.EventBox()
-        time_evbox.add(self.time_label)
-        time_evbox.modify_bg(gtk.STATE_NORMAL | gtk.STATE_ACTIVE, gtk.gdk.Color(255, 255, 255))
-        time_box = gtk.HBox(False)
-        time_box.pack_start(time_evbox, True, True, 20)
+        #self.time_label = gtk.Label()
+        #self.time_label.set_use_markup(True)
+        #self.time_label.set_markup('<span size="120000">00:00:00</span>')
+        #time_evbox = gtk.EventBox()
+        #time_evbox.add(self.time_label)
+        #time_evbox.modify_bg(gtk.STATE_NORMAL | gtk.STATE_ACTIVE, gtk.gdk.Color(255, 255, 255))
+        #time_box = gtk.HBox(False)
+        #time_box.pack_start(time_evbox, True, True, 20)
 
-        self.exercise_label = gtk.Label()
-        self.exercise_label.set_use_markup(True)
-        name = '<span size="40000"><b>%s</b></span>' % WORKOUTS[self.index]
-        self.exercise_label.set_markup(name)
-        exercise_box = gtk.HBox(False)
-        exercise_box.pack_start(self.exercise_label, True, True)
+        #self.exercise_label = gtk.Label()
+        #self.exercise_label.set_use_markup(True)
+        #name = '<span size="40000"><b>%s</b></span>' % WORKOUTS[self.index]
+        #self.exercise_label.set_markup(name)
+        #exercise_box = gtk.HBox(False)
+        #exercise_box.pack_start(self.exercise_label, True, True)
 
-        self.button_start = gtk.Button('Start')
-        self.button_start.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0, 33410, 3855))
-        self.button_start.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(0, 46260, 3855))
-        self.button_start.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(0, 25700, 3855))
-        self.button_end = gtk.Button('End')
-        self.button_end.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(46260, 3855, 0))
-        self.button_end.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(53970, 3855, 0))
-        self.button_end.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(33410, 3855, 0))
-        button_box = gtk.HBox(True)
-        button_box.pack_start(self.button_start, True, True, 10)
-        button_box.pack_start(self.button_end, True, True, 10)
+        #self.button_start = gtk.Button('Start')
+        #self.button_start.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0, 33410, 3855))
+        #self.button_start.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(0, 46260, 3855))
+        #self.button_start.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(0, 25700, 3855))
+        #self.button_end = gtk.Button('End')
+        #self.button_end.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(46260, 3855, 0))
+        #self.button_end.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(53970, 3855, 0))
+        #self.button_end.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(33410, 3855, 0))
+        #button_box = gtk.HBox(True)
+        #button_box.pack_start(self.button_start, True, True, 10)
+        #button_box.pack_start(self.button_end, True, True, 10)
 
-        vbox = gtk.VBox(False)
-        vbox.pack_start(time_box, True, True, 10)
-        vbox.pack_start(exercise_box, False, False, 2)
-        vbox.pack_start(button_box, True, True, 60)
+        #vbox = gtk.VBox(False)
+        #vbox.pack_start(time_box, True, True, 10)
+        #vbox.pack_start(exercise_box, False, False, 2)
+        #vbox.pack_start(button_box, True, True, 60)
 
-        self.add(vbox)
+        #self.add(vbox)
 
-        self.button_start.connect('clicked', self.__start)
-        self.button_end.connect('clicked', self.__end)
+        #self.button_start.connect('clicked', self.__start)
+        #self.button_end.connect('clicked', self.__end)
 
-        self.show_all()
+        self.level_selector()
+
         self.fullscreen()
+
+    def level_selector(self):
+        level_label = gtk.Label()
+        level_label.set_use_markup(True)
+        level_label.set_markup('<span size="40000"><b>Select level:</b></span>')
+
+        warmup_button = gtk.Button('Warm Up')
+        warmup_button.connect('clicked', self.impact_selector, Level.WARM_UP)
+        fatburner_button = gtk.Button('Fat Burner')
+        fatburner_button.connect('clicked', self.impact_selector, Level.FAT_BURNER)
+        spartan_button = gtk.Button('Spartan')
+        spartan_button.connect('clicked', self.impact_selector, Level.SPARTAN)
+        close_button = gtk.Button('Close')
+
+        close_button.connect('clicked', self.__close)
+
+        self._child = gtk.VBox(False)
+        self._child.pack_start(level_label, False, False, 10)
+        self._child.pack_start(warmup_button, False, False, 2)
+        self._child.pack_start(fatburner_button, False, False, 2)
+        self._child.pack_start(spartan_button, False, False, 2)
+        self._child.pack_start(close_button, False, False, 20)
+
+        self.add(self._child)
+        self.show_all()
+
+    def impact_selector(self, widget, level):
+        self.level = level
+
+        impact_label = gtk.Label()
+        impact_label.set_use_markup(True)
+        msg = '<span size="40000"><b>You have selected level %s. Now select impact:</b></span>' % Level.to_s(level)
+        impact_label.set_markup(msg)
+
+        normal_button = gtk.Button('Normal')
+        normal_button.connect('clicked', self.prepare, Impact.NORMAL)
+        high_button = gtk.Button('High')
+        high_button.connect('clicked', self.prepare, Impact.HIGH)
+        close_button = gtk.Button('Close')
+
+        close_button.connect('clicked', self.__close)
+
+        self.remove(self._child)
+
+        self._child = gtk.VBox(False)
+        self._child.pack_start(impact_label, False, False, 10)
+        self._child.pack_start(normal_button, False, False, 2)
+        self._child.pack_start(high_button, False, False, 2)
+        self._child.pack_start(close_button, False, False, 20)
+
+        self.add(self._child)
+        self.show_all()
+
+    def prepare(self, widget, impact):
+        self.impact = impact
+        print self.level, self.impact
 
     def __start(self, widget):
         self.index = 0
