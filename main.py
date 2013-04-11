@@ -10,11 +10,10 @@
 # 5.- Enjoy the pain mothafucka!
 #
 # Author: Wil Alvarez (aka satanas) <wil.alejandro@gmail.com>
-# Jun 09, 2012
 
-#TODO
-# Exercises list before start
-# Level selector
+# TODO:
+# * Improve UI
+# * Show the number of the current exercise
 
 import os
 import gtk
@@ -24,6 +23,9 @@ import random
 import gobject
 
 random.seed()
+
+LIMIT_WORKOUT = 2 # seconds
+LIMIT_REST = 2 # seconds
 
 class Level:
     WARM_UP = 1
@@ -101,7 +103,7 @@ class Arms(Training):
         self.exercises.append(Exercise('Single Arm Dumbbell Swing', Level.WARM_UP, Impact.NORMAL))
         self.exercises.append(Exercise('Dumbbell Row', Level.WARM_UP, Impact.NORMAL))
         self.exercises.append(Exercise('Superman Row', Level.FAT_BURNER, Impact.NORMAL))
-        self.exercises.append(Exercise('"T" Push-Ups', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('\"T\" Push-Ups', Level.SPARTAN, Impact.NORMAL))
         self.exercises.append(Exercise('Side to Side Push-Ups', Level.SPARTAN, Impact.NORMAL))
         self.exercises.append(Exercise('Bent Over Arm', Level.WARM_UP, Impact.NORMAL))
 
@@ -123,23 +125,6 @@ class Abs(Training):
 
         self.shuffle()
 
-#core = Core()
-#legs = Legs()
-#arms = Arms()
-#abs_ = Abs()
-#
-#WORKOUTS = core.select()
-#for item in [core, legs, arms, abs_]:
-#    if item == CORE or item == ABS:
-#        WORKOUTS += random.sample(item, 3)
-#    else:
-#        WORKOUTS += random.sample(item, 2)
-#
-#random.shuffle(WORKOUTS)
-
-LIMIT_WORKOUT = 60 # seconds
-LIMIT_REST = 15 # seconds
-
 class Workout(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
@@ -158,44 +143,6 @@ class Workout(gtk.Window):
         self.set_gravity(gtk.gdk.GRAVITY_STATIC)
         self.connect('delete-event', self.__close)
         self.connect('key-press-event', self.__on_key_press)
-
-        #self.time_label = gtk.Label()
-        #self.time_label.set_use_markup(True)
-        #self.time_label.set_markup('<span size="120000">00:00:00</span>')
-        #time_evbox = gtk.EventBox()
-        #time_evbox.add(self.time_label)
-        #time_evbox.modify_bg(gtk.STATE_NORMAL | gtk.STATE_ACTIVE, gtk.gdk.Color(255, 255, 255))
-        #time_box = gtk.HBox(False)
-        #time_box.pack_start(time_evbox, True, True, 20)
-
-        #self.exercise_label = gtk.Label()
-        #self.exercise_label.set_use_markup(True)
-        #name = '<span size="40000"><b>%s</b></span>' % WORKOUTS[self.index]
-        #self.exercise_label.set_markup(name)
-        #exercise_box = gtk.HBox(False)
-        #exercise_box.pack_start(self.exercise_label, True, True)
-
-        #self.button_start = gtk.Button('Start')
-        #self.button_start.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0, 33410, 3855))
-        #self.button_start.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(0, 46260, 3855))
-        #self.button_start.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(0, 25700, 3855))
-        #self.button_end = gtk.Button('End')
-        #self.button_end.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(46260, 3855, 0))
-        #self.button_end.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(53970, 3855, 0))
-        #self.button_end.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(33410, 3855, 0))
-        #button_box = gtk.HBox(True)
-        #button_box.pack_start(self.button_start, True, True, 10)
-        #button_box.pack_start(self.button_end, True, True, 10)
-
-        #vbox = gtk.VBox(False)
-        #vbox.pack_start(time_box, True, True, 10)
-        #vbox.pack_start(exercise_box, False, False, 2)
-        #vbox.pack_start(button_box, True, True, 60)
-
-        #self.add(vbox)
-
-        #self.button_start.connect('clicked', self.__start)
-        #self.button_end.connect('clicked', self.__end)
 
         self.level_selector()
 
@@ -238,8 +185,8 @@ class Workout(gtk.Window):
         normal_button.connect('clicked', self.prepare, Impact.NORMAL)
         high_button = gtk.Button('High')
         high_button.connect('clicked', self.prepare, Impact.HIGH)
-        close_button = gtk.Button('Close')
 
+        close_button = gtk.Button('Close')
         close_button.connect('clicked', self.__close)
 
         self.remove(self._child)
@@ -255,7 +202,78 @@ class Workout(gtk.Window):
 
     def prepare(self, widget, impact):
         self.impact = impact
-        print self.level, self.impact
+
+        core = Core()
+        legs = Legs()
+        arms = Arms()
+        abs_ = Abs()
+
+        self.workout = core.select(3, self.level, self.impact)
+        self.workout += abs_.select(3, self.level, self.impact)
+        self.workout += legs.select(2, self.level, self.impact)
+        self.workout += arms.select(2, self.level, self.impact)
+
+        random.shuffle(self.workout)
+
+        close_button = gtk.Button('Close')
+        close_button.connect('clicked', self.__close)
+
+        continue_button = gtk.Button('Continue')
+        continue_button.connect('clicked', self.ready)
+
+        self.remove(self._child)
+        self._child = gtk.VBox(False)
+
+        for exercise in self.workout:
+            label = gtk.Label(exercise.name)
+            self._child.pack_start(label, False, False, 2)
+
+        self._child.pack_start(continue_button, False, False, 10)
+        self._child.pack_start(close_button, False, False, 10)
+
+        self.add(self._child)
+        self.show_all()
+
+    def ready(self, widget):
+        self.time_label = gtk.Label()
+        self.time_label.set_use_markup(True)
+        self.time_label.set_markup('<span size="120000">00:00:00</span>')
+        time_evbox = gtk.EventBox()
+        time_evbox.add(self.time_label)
+        time_evbox.modify_bg(gtk.STATE_NORMAL | gtk.STATE_ACTIVE, gtk.gdk.Color(255, 255, 255))
+        time_box = gtk.HBox(False)
+        time_box.pack_start(time_evbox, True, True, 20)
+
+        self.exercise_label = gtk.Label()
+        self.exercise_label.set_use_markup(True)
+        name = '<span size="40000"><b>%s</b></span>' % self.workout[self.index].name
+        self.exercise_label.set_markup(name)
+        exercise_box = gtk.HBox(False)
+        exercise_box.pack_start(self.exercise_label, True, True)
+
+        self.button_start = gtk.Button('Start')
+        self.button_start.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0, 33410, 3855))
+        self.button_start.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(0, 46260, 3855))
+        self.button_start.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(0, 25700, 3855))
+        self.button_end = gtk.Button('End')
+        self.button_end.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(46260, 3855, 0))
+        self.button_end.modify_bg(gtk.STATE_PRELIGHT, gtk.gdk.Color(53970, 3855, 0))
+        self.button_end.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.Color(33410, 3855, 0))
+        button_box = gtk.HBox(True)
+        button_box.pack_start(self.button_start, True, True, 10)
+        button_box.pack_start(self.button_end, True, True, 10)
+
+        self.button_start.connect('clicked', self.__start)
+        self.button_end.connect('clicked', self.__end)
+
+        self.remove(self._child)
+        self._child = gtk.VBox(False)
+        self._child.pack_start(time_box, True, True, 10)
+        self._child.pack_start(exercise_box, False, False, 2)
+        self._child.pack_start(button_box, True, True, 60)
+
+        self.add(self._child)
+        self.show_all()
 
     def __start(self, widget):
         self.index = 0
@@ -263,7 +281,7 @@ class Workout(gtk.Window):
         self.frac = 0
         self.status = 'working'
         self.sound.start()
-        name = '<span size="40000"><b>%s</b></span>' % WORKOUTS[self.index]
+        name = '<span size="40000"><b>%s</b></span>' % self.workout[self.index].name
         self.exercise_label.set_markup(name)
         self.instant_timer = gobject.timeout_add(10, self.__update_timer)
 
@@ -275,7 +293,7 @@ class Workout(gtk.Window):
 
         if self.status == 'working':
             if self.secs >= LIMIT_WORKOUT:
-                if self.index + 1 >= len(WORKOUTS):
+                if self.index + 1 >= len(self.workout):
                     self.__done()
                 else:
                     self.__rest()
@@ -291,7 +309,7 @@ class Workout(gtk.Window):
         self.secs = 0
         self.frac = 0
         self.status = 'resting'
-        name = '<span size="40000"><b>Rest %i. Next: %s</b></span>' % (LIMIT_REST, WORKOUTS[self.index + 1])
+        name = '<span size="40000"><b>Rest %i. Next: %s</b></span>' % (LIMIT_REST, self.workout[self.index + 1].name)
         self.exercise_label.set_markup(name)
         self.sound.cycle()
 
@@ -299,10 +317,10 @@ class Workout(gtk.Window):
         self.index += 1
         self.secs = 0
         self.frac = 0
-        if self.index > len(WORKOUTS):
+        if self.index > len(self.workout):
             self.__done()
             return
-        name = '<span size="40000"><b>%s</b></span>' % WORKOUTS[self.index]
+        name = '<span size="40000"><b>%s</b></span>' % self.workout[self.index].name
         self.exercise_label.set_markup(name)
         self.status = 'working'
         self.sound.start()
