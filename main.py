@@ -24,8 +24,8 @@ import gobject
 
 random.seed()
 
-LIMIT_WORKOUT = 2 # seconds
-LIMIT_REST = 2 # seconds
+LIMIT_WORKOUT = 60 # seconds
+LIMIT_REST = 15 # seconds
 
 class Level:
     WARM_UP = 1
