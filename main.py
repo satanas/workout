@@ -77,8 +77,16 @@ class Core(Training):
         self.exercises.append(Exercise('1 Leg Plank', Level.FAT_BURNER, Impact.NORMAL))
         self.exercises.append(Exercise('Scorpions', Level.SPARTAN, Impact.NORMAL))
         self.exercises.append(Exercise('Mountain Climber', Level.SPARTAN, Impact.HIGH))
-        self.exercises.append(Exercise('Knee to Elbow Plank', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('Knee to Elbow Plank', Level.SPARTAN, Impact.NORMAL))
         self.exercises.append(Exercise('High Jump Push-Ups', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('\"T\" Push-Ups', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Mountain Climber Push-Ups', Level.SPARTAN, Impact.NORMAL))
+        self.exercises.append(Exercise('Push-Ups Crossover Climbs', Level.SPARTAN, Impact.NORMAL)) # Mountain climber but with crossed hand
+        self.exercises.append(Exercise('Push-Ups and Row', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Push-Ups and Pass Weight', Level.FAT_BURNER, Impact.NORMAL))
+        self.exercises.append(Exercise('Push-Ups Squad Combo', Level.SPARTAN, Impact.HIGH))
+        self.exercises.append(Exercise('Progression', Level.SPARTAN, Impact.HIGH))
+        #self.exercises.append(Exercise('Spiderman Push-Ups', Level.SPARTAN, Impact.NORMAL))
 
         self.shuffle()
 
@@ -103,9 +111,9 @@ class Arms(Training):
         self.exercises.append(Exercise('Single Arm Dumbbell Swing', Level.WARM_UP, Impact.NORMAL))
         self.exercises.append(Exercise('Dumbbell Row', Level.WARM_UP, Impact.NORMAL))
         self.exercises.append(Exercise('Superman Row', Level.FAT_BURNER, Impact.NORMAL))
-        self.exercises.append(Exercise('\"T\" Push-Ups', Level.SPARTAN, Impact.NORMAL))
         self.exercises.append(Exercise('Side to Side Push-Ups', Level.SPARTAN, Impact.NORMAL))
         self.exercises.append(Exercise('Bent Over Arm', Level.WARM_UP, Impact.NORMAL))
+        self.exercises.append(Exercise('Diamond Push-Ups', Level.SPARTAN, Impact.NORMAL))
 
         self.shuffle()
 
