@@ -60,9 +60,9 @@ class Training:
 
     def select(self, num, level, impact):
         selected = []
-        while len(selected) < 2:
+        while len(selected) < num:
             item = random.choice(self.exercises)
-            if item not in selected and item.level <= level and item.impact <= impact:
+            if not item in selected and item.level <= level and item.impact <= impact:
                 selected.append(item)
         return selected
 
@@ -232,6 +232,8 @@ class Workout(gtk.Window):
         self.remove(self._child)
         self._child = gtk.VBox(False)
 
+        label = gtk.Label('Exercises')
+        self._child.pack_start(label, False, False, 5)
         for exercise in self.workout:
             label = gtk.Label(exercise.name)
             self._child.pack_start(label, False, False, 2)
